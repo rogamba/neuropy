@@ -1,0 +1,9 @@
+Key: 1465
+Nodes:
+	0 NodeGene(key=0, bias=-0.09438084813993632, activation=sigmoid, aggregation=sum, response=1.0)
+Connections:
+	EdgeGene(key=(-5, 0), weight=3.8103210600671376, enabled=True)
+	EdgeGene(key=(-4, 0), weight=0.8342634365275221, enabled=True)
+	EdgeGene(key=(-2, 0), weight=1.9936387863591154, enabled=True)
+Fitness
+	14.2
