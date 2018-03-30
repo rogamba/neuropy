@@ -5,6 +5,9 @@ import config
 import visualize
 import numpy as np
 import os
+import sys
+import json
+import sys
 
 ''' Steps to use the library:
     1. Set the configuration parameters
@@ -12,6 +15,13 @@ import os
     3. Set the fitness function you would like to eval your genomes with
     4. Pass the config dict to the evolution instance
     5. RUn the evolution process passing the fitness function
+
+    x = state.item(0)
+    theta = state.item(1)
+    phi = state.item(2)
+    x_dot = state.item(3)
+    theta_dot = state.item(4)
+    phi_dot = state.item(5)
         
 '''
 
@@ -95,7 +105,7 @@ def mu(state, v):
 
 
 # Define fitness evaluation function for each genome
-def eval_genome(genome):
+def eval_genome(genome, test=False):
     ''' Receives a list of genome objects and sets 
         the fitness to every genome
     '''
@@ -124,8 +134,13 @@ def eval_genome(genome):
         a = 0
         for n in range(1,5000):
             # Render
-            cart.render()
+            if test or ('animation' not in config.params or config.params['animation']):
+                cart.render()
             s_, r, done, info = cart.step(a)
+
+            if 'logging' not in config.params or config.params['logging']:
+                print("Cart state: ")
+                print(s_)
 
             # How many steps did the cart hold?
             step += 1
@@ -170,21 +185,37 @@ def run():
     # Run evolution
     winner = evolution.run(fitness_function=eval_genome,generations=config.params['generations'])
     
-    # Show performance of winner vs actual value
-    #evaluate_winner
+    # Eval genome
+    eval_genome(winner, test=True)
 
-    print('\nOutput:')
-    ph = Phenotype(config.params, winner)
-    winner_net = ph.create()
-    for xi, xo in zip(xor_inputs, xor_outputs):
-        output = winner_net.activate(xi)
-        print("input {!r}, expected output {!r}, got {!r}".format(xi, xo, output))
+    # Save winner as JSON
+    with open(REL_PATH+"/winner.json","w") as file:
+        json.dump(winner.to_json(), file)
 
     # Print the net
-    node_names = {-1:'A', -2: 'B', 0:'A XOR B'}
+    # [x],[theta],[phi],[x_dot],[theta_dot],[phi_dot]
+    node_names = {-1:'X', -2: 'Theta', -3:'Phi', -4:'X dot', -5:'Theta dot', -6:'Phi dot', 0:'Force'}
     visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/plots/winner.gv")
 
 
 
+def test_solution():
+    ''' Load winner from json file and simulate
+    '''
+    from genome import Genome
+    # Load file
+    config.build(CONFIG_FILE)
+    with open(REL_PATH+'/winner.json','r') as file:
+        winner_dict = json.load(file)
+    winner = Genome(config.params, winner_dict['key'], rep=winner_dict)
+    print("Evaluating solution...")
+    print(winner)
+    fit = eval_genome(winner, test=True)
+    print("Fitness: "+str(fit))
+
+
 if __name__ == '__main__':
-    run()
+    if 'solution' not in sys.argv:
+        run()
+    else:
+        test_solution()

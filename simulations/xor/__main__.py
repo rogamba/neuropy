@@ -3,6 +3,8 @@ from phenotype import Phenotype
 import config
 import visualize
 import os
+import json
+import sys
 
 ''' Steps to use the library:
     1. Set the configuration parameters
@@ -63,9 +65,32 @@ def run():
 
     # Print the net
     node_names = {-1:'A', -2: 'B', 0:'A XOR B'}
+    
+
+    # Save winner to json file
+    with open(REL_PATH+"/winner.json","w") as file:
+        json.dump(winner.to_json(), file)
+
     visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/plots/winner.gv")
 
 
+def test_solution():
+    ''' Load winner from json file and simulate
+    '''
+    from genome import Genome
+    # Load file
+    config.build(CONFIG_FILE)
+    with open(REL_PATH+'/winner.json','r') as file:
+        winner_dict = json.load(file)
+    winner = Genome(config.params, winner_dict['key'], rep=winner_dict)
+    print("Evaluating solution...")
+    print(winner)
+    fit = eval_genome(winner)
+    print("Fitness: "+str(fit))
+
 
 if __name__ == '__main__':
-    run()
+    if 'solution' not in sys.argv:
+        run()
+    else:
+        test_solution()

@@ -37,6 +37,7 @@ class Evolution(object):
         #print("[evolution] Evolving populations... %s, %s" % (k,generations))
         while generations is None or k < generations:
             k+=1
+            print("Generation: "+str(k))
 
             self.population.generation = k
 

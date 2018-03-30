@@ -18,6 +18,7 @@ import logging
 import math
 import numpy as np
 from scipy.integrate import ode
+from . import rendering
 sin = np.sin
 cos = np.cos
 
@@ -100,7 +101,7 @@ class DoublePendulumCart(object):
         #u = action
         u = self.discrete_actuator(action)
         self.counter += 1
-        print("Action: ", action, "Force: ", u)
+        #print("Action: ", action, "Force: ", u)
         
         # (state_dot = func(state))
         def func(t, state, u):
@@ -160,6 +161,8 @@ class DoublePendulumCart(object):
         done =  x < -self.x_threshold \
                 or x > self.x_threshold \
                 or self.counter > 1000 \
+                or phi > 90*2*np.pi/360 \
+                or phi < -90*2*np.pi/360 \
                 or theta > 90*2*np.pi/360 \
                 or theta < -90*2*np.pi/360 
         done = bool(done)
@@ -176,7 +179,7 @@ class DoublePendulumCart(object):
         self.counter = 0
         return self.state
 
-    def _render(self, mode='human', close=False):
+    def _render(self, mode='human', close=False, generation=None):
         if close:
             if self.viewer is not None:
                 self.viewer.close()
@@ -206,7 +209,6 @@ class DoublePendulumCart(object):
         cartheight = 30.0
 
         if self.viewer is None:
-            from . import rendering
             self.viewer = rendering.Viewer(screen_width, screen_height, display=self.display)
             l,r,t,b = -cartwidth/2, cartwidth/2, cartheight/2, -cartheight/2
             axleoffset =cartheight/4.0

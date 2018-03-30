@@ -6,7 +6,7 @@ from pprint import pprint
 
 class Genome(object):
 
-    def __init__(self, config, key, init=True, nodes=[], edges=[]):
+    def __init__(self, config, key, init=True, nodes=[], edges=[], fitness=None, activation=None, rep=None):
         ''' Create a randome genome by default
             self.nodes = { <key> : <object NodeObject>, ... }  
             self.connections = { (<node_in>,<node_out>) : <object NodeObject>, ... }  
@@ -18,21 +18,45 @@ class Genome(object):
         self.edges={}
         self.nodes={}
 
-        # Init the nodes and edges genes of the genome
-        if nodes and edges:
-            for node in nodes:
-                self.nodes[node.key] = node
-            for edge in edges:
-                self.edges[edge.key] = edge
+        # Load from representation
+        if rep and 'nodes' in rep and 'edges' in rep:
+            for node in rep['nodes']:
+                self.nodes[node['key']] = NodeGene(
+                    self.config, 
+                    key=node['key'],
+                    bias=node['bias'],
+                    activation=node['activation'],
+                    aggregation=node['aggregation'],
+                    response=node['response']
+                )
+            for edge in rep['edges']:
+                print(edge)
+                self.edges[tuple(edge['key'])] = EdgeGene(
+                    self.config,
+                    key=tuple(edge['key']),
+                    weight=edge['weight'],
+                    enabled=edge['enabled']
+                )
+            self.fitness = rep['fitness']
 
-        self.fitness = None
+        else:
+            # Init the nodes and edges genes of the genome
+            if nodes and edges:
+                for node in nodes:
+                    self.nodes[node.key] = node
+                for edge in edges:
+                    self.edges[edge.key] = edge
+
+            self.fitness = fitness
+            self.activation = self.config['activation_default'] 
+
+
         # By convention, input pins have negative keys, and the output
         # pins have keys 0,1,...
         self.input_keys = [-i - 1 for i in range(self.config['num_inputs'])]
         self.output_keys = [i for i in range(self.config['num_outputs'])]
         # Activations -> the nodes init_attributes method takes care of this
-        self.activation = self.config['activation_default']
-
+    
         # Create new genome
         if init and not (nodes and edges):
             self.new()
@@ -51,6 +75,35 @@ class Genome(object):
         s+="\nFitness\n\t" + str(self.fitness)
         
         return s
+
+    def to_json(self):
+        ''' Returns a JSON representation of the genome
+        '''
+        # Genome
+        genome = {
+            "key" : self.key,
+            "nodes" : [],
+            "edges" : [],
+            "fitness" : self.fitness
+        }
+        for k, ng in self.nodes.items():
+            genome['nodes'].append({
+                "number" : k,
+                "key" : ng.key,
+                "bias" : ng.bias,
+                "activation" : ng.activation,
+                "aggregation" : ng.aggregation,
+                "response" : ng.response
+            })
+        edges = list(self.edges.values())
+        edges.sort()
+        for e in edges:
+            genome['edges'].append({
+                "key" : e.key,
+                "weight" : e.weight,
+                "enabled" : e.enabled 
+            })
+        return  genome
 
 
     def new(self):

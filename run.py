@@ -1,7 +1,7 @@
-from evolution import Evolution
-from phenotype import Phenotype
-import config
-import visualize
+from .evolution import Evolution
+from .phenotype import Phenotype
+from . import config
+from . import visualize
 
 ''' Steps to use the library:
     1. Set the configuration parameters
