@@ -3,7 +3,7 @@
     "logging":                      false,                        
     "generations" :                 250 ,
     "fitness_criterion" :           "max",
-    "fitness_threshold" :            2,
+    "fitness_threshold" :            30,
     "pop_size" :                     150,                                   
     "activation_default" :          "sigmoid",
     "aggregation_default" :         "sum",

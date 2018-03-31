@@ -160,7 +160,7 @@ class DoublePendulumCart(object):
         
         done =  x < -self.x_threshold \
                 or x > self.x_threshold \
-                or self.counter > 1000 \
+                or self.counter > 5000 \
                 or phi > 90*2*np.pi/360 \
                 or phi < -90*2*np.pi/360 \
                 or theta > 90*2*np.pi/360 \

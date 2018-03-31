@@ -8,6 +8,7 @@ import os
 import sys
 import json
 import sys
+import datetime
 
 ''' Steps to use the library:
     1. Set the configuration parameters
@@ -127,7 +128,7 @@ def eval_genome(genome, test=False):
     
     times = []
     #print("-------------> new genome")
-    for e in range(2):
+    for e in range(3):
         step = 0
         done = False
         s = cart.reset()
@@ -183,7 +184,10 @@ def run():
     evolution = Evolution(config.params)
 
     # Run evolution
+    time_start = datetime.datetime.utcnow()
     winner = evolution.run(fitness_function=eval_genome,generations=config.params['generations'])
+    time_end = datetime.datetime.utcnow()
+    print("Finished evolution proces, time: {}".format(time_start-time_end))
     
     # Eval genome
     eval_genome(winner, test=True)
