@@ -50,7 +50,6 @@ class Genome(object):
             self.fitness = fitness
             self.activation = self.config['activation_default'] 
 
-
         # By convention, input pins have negative keys, and the output
         # pins have keys 0,1,...
         self.input_keys = [-i - 1 for i in range(self.config['num_inputs'])]

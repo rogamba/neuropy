@@ -82,15 +82,16 @@ class DoublePendulumCart(object):
         return self._render(mode=mode, close=close)
 
 
-    def step(self, action):
-        return self._step(action)
+    def step(self, action, actuator="discrete"):
+        return self._step(action, actuator)
 
 
     def _configure(self, display=None):
         self.display = display 
 
-    def _step(self, action):
+    def _step(self, action, actuator="discrete"):
         #assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
+
         state = self.state
         x = state.item(0)
         theta = state.item(1)
@@ -98,10 +99,16 @@ class DoublePendulumCart(object):
         x_dot = state.item(3)
         theta_dot = state.item(4)
         phi_dot = state.item(5)
-        #u = action
-        u = self.discrete_actuator(action)
+
+        # Actuator
+        if not actuator:
+            u = action
+        elif actuator=="discrete":
+            u = self.discrete_actuator(action)
+        elif actuator=="analog": 
+            u = self.analog_actuator(action)
         self.counter += 1
-        #print("Action: ", action, "Force: ", u)
+        print("Action: ", action, "Force: ", u)
         
         # (state_dot = func(state))
         def func(t, state, u):
@@ -258,6 +265,11 @@ class DoublePendulumCart(object):
 
     def discrete_actuator(self, action):
         return self.force_mag if action > 0.5 else -self.force_mag
+
+    def analog_actuator(self, action):
+        sign = +1 if action > 0.5 else -1
+        force = sign * self.force_mag * 10 
+        return force
 
 
         

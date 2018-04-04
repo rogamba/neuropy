@@ -127,16 +127,18 @@ def eval_genome(genome, test=False):
     # How many episodes for the same net?
     
     times = []
-    #print("-------------> new genome")
-    for e in range(3):
+    for e in range(config.params['evals_per_genome']):
         step = 0
         done = False
         s = cart.reset()
         a = 0
         for n in range(1,5000):
+
             # Render
             if test or ('animation' not in config.params or config.params['animation']):
                 cart.render()
+
+            # Cart state    
             s_, r, done, info = cart.step(a)
 
             if 'logging' not in config.params or config.params['logging']:
@@ -147,29 +149,27 @@ def eval_genome(genome, test=False):
             step += 1
             output = net.activate(s_)
             a_ = output[0]
-            #print("Net Output: ")
-            #print(a_)
 
             # update v (actor): ??
-            delta_v = alpha*(((a - mu(s, v))*phi_actor(s)))*q_hat(s, a, w)
-            v = np.add(v, delta_v)
+            #delta_v = alpha*(((a - mu(s, v))*phi_actor(s)))*q_hat(s, a, w)
+            #v = np.add(v, delta_v)
  
             # update w (critic): ??
-            delta_w = (beta*(r + gamma*q_hat(s_, a_, w) - q_hat(s, a, w)))*phi_critic(s, a)
-            w = np.add(w, delta_w)
+            #delta_w = (beta*(r + gamma*q_hat(s_, a_, w) - q_hat(s, a, w)))*phi_critic(s, a)
+            #w = np.add(w, delta_w)
 
             # Update state and action
             s = s_
             a = a_
 
             if done or n >= 5000:
-                print("Episode finished after %s steps" % (step,))
+                #print("Episode finished after %s steps" % (step,))
                 times.append(step)
                 break
 
     # Get the genome fitness (avg steps) * 10 = seconds
     fitness = np.mean(times) / 50
-    #print("Genome fitness: ",fitness)
+    print("Genome {} fitness: {}".format(genome.key,fitness))
     return fitness
     
 
@@ -184,10 +184,7 @@ def run():
     evolution = Evolution(config.params)
 
     # Run evolution
-    time_start = datetime.datetime.utcnow()
     winner = evolution.run(fitness_function=eval_genome,generations=config.params['generations'])
-    time_end = datetime.datetime.utcnow()
-    print("Finished evolution proces, time: {}".format(time_start-time_end))
     
     # Eval genome
     eval_genome(winner, test=True)
@@ -202,6 +199,33 @@ def run():
     visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/plots/winner.gv")
 
 
+def test_model():
+    ''' Test model behaviour with any external
+    '''
+    global cart
+    
+    step = 0
+    done = False
+    s = cart.reset()
+    a = 0
+    for n in range(1,500):
+
+        # Render
+        cart.render()
+
+        # Cart state    
+        print(a)
+        s_, r, done, info = cart.step(a, actuator=None)
+        print("Cart state: ")
+        print(s_)
+
+        # How many steps did the cart hold?
+        step += 1
+
+        s = s_
+
+
+
 
 def test_solution():
     ''' Load winner from json file and simulate
@@ -211,15 +235,20 @@ def test_solution():
     config.build(CONFIG_FILE)
     with open(REL_PATH+'/winner.json','r') as file:
         winner_dict = json.load(file)
-    winner = Genome(config.params, winner_dict['key'], rep=winner_dict)
+    winner = Genome(config.params, winner_dict['key'], rep=winner_dict, init=False)
     print("Evaluating solution...")
     print(winner)
     fit = eval_genome(winner, test=True)
     print("Fitness: "+str(fit))
+    node_names = {-1:'X', -2: 'Theta', -3:'Phi', -4:'X dot', -5:'Theta dot', -6:'Phi dot', 0:'Force'}
+    visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/plots/winner_solution.gv")
 
 
 if __name__ == '__main__':
-    if 'solution' not in sys.argv:
-        run()
-    else:
+    if 'solution' in sys.argv:
         test_solution()
+    elif 'model' in sys.argv:
+        test_model()
+    else:
+        run()
+        
