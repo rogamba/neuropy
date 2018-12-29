@@ -18,7 +18,7 @@ import logging
 import math
 import numpy as np
 from scipy.integrate import ode
-from . import rendering
+from models import rendering
 sin = np.sin
 cos = np.cos
 

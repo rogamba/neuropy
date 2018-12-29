@@ -1,5 +1,5 @@
 import numpy as np
-from neural_net import NeuralNet
+from models.neural_net import NeuralNet
 import config
 
 ''' Phenotype is the "real" or functional representation

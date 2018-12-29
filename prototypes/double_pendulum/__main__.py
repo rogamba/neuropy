@@ -1,8 +1,8 @@
-from evolution import Evolution
-from phenotype import Phenotype
-from models.double_pendulum import DoublePendulumCart
+from models.evolution import Evolution
+from models.phenotype import Phenotype
+from .model import DoublePendulumCart
+import models.visualize
 import config
-import visualize
 import numpy as np
 import os
 import sys
@@ -196,7 +196,7 @@ def run():
     # Print the net
     # [x],[theta],[phi],[x_dot],[theta_dot],[phi_dot]
     node_names = {-1:'X', -2: 'Theta', -3:'Phi', -4:'X dot', -5:'Theta dot', -6:'Phi dot', 0:'Force'}
-    visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/plots/winner.gv")
+    visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/results/winner.gv")
 
 
 def test_model():
@@ -233,7 +233,7 @@ def test_solution():
     from genome import Genome
     # Load file
     config.build(CONFIG_FILE)
-    with open(REL_PATH+'/winner.json','r') as file:
+    with open(REL_PATH+'/results/winner.json','r') as file:
         winner_dict = json.load(file)
     winner = Genome(config.params, winner_dict['key'], rep=winner_dict, init=False)
     print("Evaluating solution...")
@@ -241,7 +241,7 @@ def test_solution():
     fit = eval_genome(winner, test=True)
     print("Fitness: "+str(fit))
     node_names = {-1:'X', -2: 'Theta', -3:'Phi', -4:'X dot', -5:'Theta dot', -6:'Phi dot', 0:'Force'}
-    visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/plots/winner_solution.gv")
+    visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/results/winner_solution.gv")
 
 
 if __name__ == '__main__':

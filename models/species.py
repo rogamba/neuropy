@@ -1,4 +1,4 @@
-from indexer import Indexer
+from models.indexer import Indexer
 
 class Species(object):
 

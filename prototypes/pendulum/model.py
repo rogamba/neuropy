@@ -123,7 +123,7 @@ class PendulumCart(object):
         cartheight = 30.0
 
         if self.viewer is None:
-            from . import rendering
+            from models import rendering
             self.viewer = rendering.Viewer(screen_width, screen_height)
             l,r,t,b = -cartwidth/2, cartwidth/2, cartheight/2, -cartheight/2
             axleoffset =cartheight/4.0

@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 import random
-from activations import get_activation
+from models.activations import get_activation
 
 ''' Developer:  Rodrigo Gamba
     Neural net class, for evolving

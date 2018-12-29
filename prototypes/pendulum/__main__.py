@@ -1,10 +1,10 @@
-from evolution import Evolution
-from phenotype import Phenotype
-from models.pendulum import PendulumCart
+from models.evolution import Evolution
+from models.phenotype import Phenotype
 import config
-import visualize
+from models import visualize
 import numpy as np
 import os
+from .model import PendulumCart
 
 ''' Steps to use the library:
     1. Set the configuration parameters

@@ -1,5 +1,5 @@
-from gene import NodeGene, EdgeGene
-from phenotype import Phenotype
+from models.gene import NodeGene, EdgeGene
+from models.phenotype import Phenotype
 import random
 from pprint import pprint
 

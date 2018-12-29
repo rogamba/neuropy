@@ -1,6 +1,6 @@
-from population import Population
+from models.population import Population
+from models.utils import *
 from pprint import pprint
-from utils import *
 import datetime
 
 

@@ -1,13 +1,12 @@
 import config
-from genome import Genome
-from gene import NodeGene, EdgeGene
-from species import Species, DistanceCache
-from indexer import Indexer
-from utils import mean, median, variance, stdev, softmax
+from models.genome import Genome
+from models.gene import NodeGene, EdgeGene
+from models.species import Species, DistanceCache
+from models.indexer import Indexer
+from models.utils import mean, median, variance, stdev, softmax
 import random
 import math
 import sys
-
 from pprint import pprint
 
 

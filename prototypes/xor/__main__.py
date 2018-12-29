@@ -1,7 +1,7 @@
-from evolution import Evolution
-from phenotype import Phenotype
+from models.evolution import Evolution
+from models.phenotype import Phenotype
+from models import visualize
 import config
-import visualize
 import os
 import json
 import sys
@@ -68,10 +68,10 @@ def run():
     
 
     # Save winner to json file
-    with open(REL_PATH+"/winner.json","w") as file:
+    with open(REL_PATH+"/results/winner.json","w") as file:
         json.dump(winner.to_json(), file)
 
-    visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/plots/winner.gv")
+    visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/results/winner.gv")
 
 
 def test_solution():
@@ -80,7 +80,7 @@ def test_solution():
     from genome import Genome
     # Load file
     config.build(CONFIG_FILE)
-    with open(REL_PATH+'/winner.json','r') as file:
+    with open(REL_PATH+'/results/winner.json','r') as file:
         winner_dict = json.load(file)
     winner = Genome(config.params, winner_dict['key'], rep=winner_dict)
     print("Evaluating solution...")

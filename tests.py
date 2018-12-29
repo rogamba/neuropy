@@ -6,7 +6,7 @@ from gene import NodeGene, EdgeGene
 from species import Species
 from neural_net import NeuralNet
 from phenotype import Phenotype
-from activations import *
+from models.activations import *
 from run import eval_genome as fitness_function
 import config
 
