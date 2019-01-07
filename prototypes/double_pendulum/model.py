@@ -163,6 +163,7 @@ class DoublePendulumCart(object):
         #state_dot = func(0, state, u)
         #state = state + self.tau*state_dot
         
+        # Update state
         self.state = state
         
         done =  x < -self.x_threshold \

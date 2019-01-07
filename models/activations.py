@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 ''' Misc of activation functions 
     for the neural network
@@ -14,6 +15,11 @@ def sigmoid_activation(x=None,deriv=False):
     if deriv == True:
         return sigmoid(x)*(1-sigmoid(x))
     return 1/(1+np.exp(-x))
+
+def tansig_activation(x=None,deriv=False):
+    ''' Tangent Sigmoid function
+    '''
+    return ( np.exp(x)-np.exp(-x) ) / ( np.exp(x)+np.exp(-x) )
 
 def purelin_activation(x=None,deriv=False):
     ''' Linear (usually used in output neurons)
