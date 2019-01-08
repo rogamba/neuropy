@@ -9,7 +9,7 @@
     "activation_default" :          "tansig",
     "aggregation_default" :         "sum",
     "bias_init_mean" :              0.0,
-    "bias_init_stdev" :              1.0,
+    "bias_init_stdev" :             1.0,
     "bias_max_val" :                30,
     "bias_min_val" :                -30,
     "bias_mutate_power" :           0.5,

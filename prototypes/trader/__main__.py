@@ -55,9 +55,9 @@ def eval_genome(genome):
     trader = Trader(historic_data)
     for e in range(config.params['evals_per_genome']):
 
-        print("--------------------------------")
-        print("--------------------------------")
-        print("--------------------------------")
+        #print("--------------------------------")
+        #print("--------------------------------")
+        #print("--------------------------------")
         trader.reset()
         posture = None
 
@@ -101,9 +101,10 @@ def load_history(coin):
     global history, historic_data
     history = pd.read_csv('{}/data/{}.csv'.format(REL_PATH,coin))
     # Filter just one month
-    _history = history[
-        (history['month'] == 11) | 
-        (history['month'] == 12)]
+    _history = history
+    #_history = history[
+    #    (history['month'] == 11) | 
+    #    (history['month'] == 12)]
     historic_data = Trader.convert_data(_history)
 
 
