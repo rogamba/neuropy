@@ -219,13 +219,13 @@ class Trader(object):
     def next(self):
         """ Complete state and transaction and append
         """
-        print("Price: {}, Balace: {}, Bag: {}, Total Value: {}, Transaction: {}".format(
-            self.state['price'],
-            self.balance,
-            self.bag,
-            self.value,
-            self.transaction
-        ))
+        #print("Price: {}, Balace: {}, Bag: {}, Total Value: {}, Transaction: {}".format(
+        #    self.state['price'],
+        #    self.balance,
+        #    self.bag,
+        #    self.value,
+        #    self.transaction
+        #))
         # Append into state
         self.state['posture'] = self.posture
         self.state['transaction'] = self.transaction
@@ -253,7 +253,9 @@ class Trader(object):
         """ True if total value hasn't reduced to half 
             of it's initial value
         """
-        return self.value > self.initial_value/2 
+        return  self.value > self.initial_value/2 \
+                and self.bag > 0 \
+                and self.balance > 1
 
 
 

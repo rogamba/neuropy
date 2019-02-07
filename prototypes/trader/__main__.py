@@ -21,6 +21,11 @@ REL_PATH = os.path.dirname(os.path.realpath(__file__))
 CONFIG_FILE = REL_PATH+'/config.json'
 history = None
 historic_data = []
+evolution = None 
+
+
+evals_total = 0
+evals_counter = 0
 
 
 def eval_genome(genome):
@@ -42,7 +47,7 @@ def eval_genome(genome):
           * postura: buy, sell, hold
         - Tomar postura de venta al comienzo (compra de x cantidad de )
     """
-    global historic_data
+    global historic_data, evals_total, evals_counter
     # Create phenotype from the genome
     coin = config.params['coin']
     phenotype = Phenotype(config.params, genome)
@@ -58,6 +63,11 @@ def eval_genome(genome):
         #print("--------------------------------")
         #print("--------------------------------")
         #print("--------------------------------")
+        evals_counter+=1
+        print("Evaluation {} of {}".format(
+            evals_counter,
+            evals_total
+        ))
         trader.reset()
         posture = None
 
@@ -66,7 +76,7 @@ def eval_genome(genome):
             _svector = trader.get_vector()
             #print("State Vector {}".format(_svector))
             output = net.activate(_svector)
-            print("Output: {}".format(output))
+            #print("Output: {}".format(output))
 
             # With the posture, trade
             #val_start = trader.calculate_value()
@@ -98,7 +108,7 @@ def eval_genome(genome):
 
 
 def load_history(coin):
-    global history, historic_data
+    global history, historic_data, evolution
     history = pd.read_csv('{}/data/{}.csv'.format(REL_PATH,coin))
     # Filter just one month
     _history = history
@@ -112,7 +122,7 @@ def load_history(coin):
 def run():
     print("[run] Starting trading prototype")
     # Get configuration parameters
-    global history, historic_data
+    global history, historic_data, evolution, evals_total
     config.build(CONFIG_FILE)
 
     # Historic data for evolution
@@ -125,6 +135,7 @@ def run():
     evolution = Evolution(config.params)
 
     # Run evolution
+    evals_total = config.params['generations'] * config.params['pop_size']
     winner = evolution.run(fitness_function=eval_genome,generations=config.params['generations'])
     
     # Eval genome
