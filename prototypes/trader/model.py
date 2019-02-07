@@ -14,8 +14,8 @@ class Trader(object):
 
         # Init variables
         self.profit = 0             # Initial profit of 0
-        self.balance = 1            # Balance in the base currency (btc)
-        self.bag = 0                # Balance in the other currency
+        self.balance = 100         # Balance in the base currency (btc)
+        self.bag = 100             # Balance in the other currency
         self.amt_buy = 1            # 1 Ether
         self.amt_sell = 1           # 1 Ether
         self.commission = 0.00098   # Cost of every transaction
@@ -83,7 +83,8 @@ class Trader(object):
         self.posture = 1
         self.states = []
         self.transactions = []
-        self.balance = 1
+        self.balance = 100
+        self.bag = 100
         self.pointer = 0
         self.profit = 0
         self.value = 0
@@ -107,8 +108,8 @@ class Trader(object):
         """
         # For second to length of history
         for i in range(self.pointer, len(self.history)):
-            print("....")
-            print(self.pointer)
+            #print("....")
+            #print(self.pointer)
             self.pointer = i
             # Update current_state variable
             self.state = {
@@ -171,7 +172,7 @@ class Trader(object):
     def trade(self, action=None):
         """ Posture can be from -1 to 1
         """
-        print("Trading {}".format(action))
+        #print("Trading {}".format(action))
         # Buy
         if action > 0.2 : self.posture = 1
         # Hold
@@ -180,7 +181,7 @@ class Trader(object):
         if action < -0.2: self.posture = -1
         
         # Evaluate posture and calculare actual cost of trade
-        print("Posture: {}".format(self.posture))
+        #print("Posture: {}".format(self.posture))
         if self.posture == 1:
             _amt = self.amt_buy
             _base = (_amt * self.state['price'] \
@@ -194,8 +195,10 @@ class Trader(object):
             _amt = _amt * -1 
 
         # Set posture to 0 if no balance available
-        if (self.posture == 1 and self.balance < _base) \
-            or (self.posture == -1 and self.bag):
+        if (self.posture == 1 and self.balance < abs(_base)) \
+            or (self.posture == -1 and self.bag < abs(_amt)):
+            print("NOT enough amount!!")
+            self.stop=True
             self.posture = 0
 
         if self.posture == 0:
@@ -208,7 +211,7 @@ class Trader(object):
         self.balance = self.balance + _base
         self.bag = self.bag + _amt
         self.value = self.calculate_value()
-        print("Posture : {} // Transaction: {}".format(self.posture, self.transaction))
+        #print("Posture : {} // Transaction: {}".format(self.posture, self.transaction))
 
         return self
 
@@ -216,7 +219,8 @@ class Trader(object):
     def next(self):
         """ Complete state and transaction and append
         """
-        print("Balace: {}, Bag: {}, Total Value: {}, Transaction: {}".format(
+        print("Price: {}, Balace: {}, Bag: {}, Total Value: {}, Transaction: {}".format(
+            self.state['price'],
             self.balance,
             self.bag,
             self.value,
@@ -246,9 +250,9 @@ class Trader(object):
 
 
     def status(self):
-        """ Return if status is positive
+        """ True if total value hasn't reduced to half 
+            of it's initial value
         """
-        print(self.value > self.initial_value/2 )
         return self.value > self.initial_value/2 
 
 

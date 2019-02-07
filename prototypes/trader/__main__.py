@@ -5,7 +5,7 @@ import sys
 import config
 from models.evolution import Evolution
 from models.phenotype import Phenotype
-import models.visualize
+import models.visualize as visualize
 import json
 
 """
