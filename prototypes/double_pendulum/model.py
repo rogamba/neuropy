@@ -62,10 +62,34 @@ class DoublePendulumCart(object):
 
         self.reset()
         self.viewer = None
+        self.logging = True
 
         # Just need to initialize the relevant attributes
         self._configure()
 
+
+    def set_state(self, s=None):
+        """ Set the cart state
+            x = state.item(0)
+            theta = state.item(1)
+            phi = state.item(2)
+            x_dot = state.item(3)
+            theta_dot = state.item(4)
+            phi_dot = state.item(5)
+        """
+        if s is None:
+            s = np.matrix([[0],[0],[0],[0],[0],[0]])
+        self.state = s
+
+
+    def set_logging(self, logging):
+        self.logging = logging
+
+    def log(self, func, msg):
+        """ Log if car set
+        """
+        if self.logging:
+            func(msg)
 
 
     def reset(self):
@@ -108,7 +132,7 @@ class DoublePendulumCart(object):
         elif actuator=="analog": 
             u = self.analog_actuator(action)
         self.counter += 1
-        print("Action: ", action, "Force: ", u)
+        self.log(print, ("Action: ", action, "Force: ", u) )
         
         # (state_dot = func(state))
         def func(t, state, u):
@@ -118,7 +142,7 @@ class DoublePendulumCart(object):
             x_dot = state.item(3)
             theta_dot = state.item(4)
             phi_dot = state.item(5)
-            state = np.matrix([[x],[theta],[phi],[x_dot],[theta_dot],[phi_dot]]) # this is needed for some weird reason
+            state = np.matrix([[x],[theta],[phi],[x_dot],[theta_dot],[phi_dot]]) 
             
             d1 = self.m0 + self.m1 + self.m2
             d2 = self.m1*self.l1 + self.m2*self.L1
