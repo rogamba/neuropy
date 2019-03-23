@@ -132,7 +132,7 @@ class DoublePendulumCart(object):
         elif actuator=="analog": 
             u = self.analog_actuator(action)
         self.counter += 1
-        self.log(print, ("Action: ", action, "Force: ", u) )
+        self.log(print, ("a: ", action, "u: ", u) )
         
         # (state_dot = func(state))
         def func(t, state, u):
@@ -153,22 +153,24 @@ class DoublePendulumCart(object):
             f1 = (self.m1*self.l1 + self.m2*self.L1)*self.g 
             f2 = self.m2*self.l2*self.g    
             
-            D = np.matrix([[d1, d2*cos(theta), d3*cos(phi)], 
-                    [d2*cos(theta), d4, d5*cos(theta-phi)],
-                    [d3*cos(phi), d5*cos(theta-phi), d6]])
-            
-            C = np.matrix([[0, -d2*sin(theta)*theta_dot, -d3*sin(phi)*phi_dot],
-                    [0, 0, d5*sin(theta-phi)*phi_dot],
-                    [0, -d5*sin(theta-phi)*theta_dot, 0]])
-                    
-            G = np.matrix([[0], [-f1*sin(theta)], [-f2*sin(phi)]])
-            
+            D = np.matrix([
+                [d1, d2*cos(theta), d3*cos(phi)], 
+                [d2*cos(theta), d4, d5*cos(theta-phi)],
+                [d3*cos(phi), d5*cos(theta-phi), d6]])
+            C = np.matrix([
+                [0, -d2*sin(theta)*theta_dot, -d3*sin(phi)*phi_dot],
+                [0, 0, d5*sin(theta-phi)*phi_dot],
+                [0, -d5*sin(theta-phi)*theta_dot, 0]])
+            G = np.matrix([
+                [0], 
+                [-f1*sin(theta)], 
+                [-f2*sin(phi)]])
             H  = np.matrix([[1],[0],[0]])
             
             I = np.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
             O_3_3 = np.matrix([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
             O_3_1 = np.matrix([[0], [0], [0]])
-            
+
             A_tilde = np.bmat([[O_3_3, I],[O_3_3, -np.linalg.inv(D)*C]])
             B_tilde = np.bmat([[O_3_1],[np.linalg.inv(D)*H]])
             W = np.bmat([[O_3_1],[np.linalg.inv(D)*G]])
@@ -193,10 +195,10 @@ class DoublePendulumCart(object):
         done =  x < -self.x_threshold \
                 or x > self.x_threshold \
                 or self.counter > 5000 \
-                or phi > 90*2*np.pi/360 \
-                or phi < -90*2*np.pi/360 \
                 or theta > 90*2*np.pi/360 \
-                or theta < -90*2*np.pi/360 
+                or theta < -90*2*np.pi/360 \
+                or phi > 90*2*np.pi/360 \
+                or phi < -90*2*np.pi/360 
         done = bool(done)
 
         cost = 10*normalize_angle(theta) + \

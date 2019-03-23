@@ -11,10 +11,10 @@ digraph {
 	4 [fillcolor=white style=filled]
 	6 [fillcolor=white style=filled]
 	"Theta dot" -> Force [color=green penwidth=0.9695567380655007 style=solid]
-	"Theta dot" -> 2 [color=red penwidth=0.39844049267565895 style=dotted]
 	"X dot" -> Force [color=green penwidth=0.37948834735512027 style=solid]
-	Theta -> Force [color=green penwidth=1.0058433062780199 style=solid]
 	Theta -> 2 [color=red penwidth=0.14823791603195596 style=dotted]
+	"Theta dot" -> 2 [color=red penwidth=0.39844049267565895 style=dotted]
 	2 -> 6 [color=green penwidth=0.37945289481268496 style=solid]
+	Theta -> Force [color=green penwidth=1.0058433062780199 style=solid]
 	6 -> 4 [color=red penwidth=0.1324479062543512 style=solid]
 }

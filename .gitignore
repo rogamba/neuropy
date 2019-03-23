@@ -4,3 +4,8 @@ env/
 data/
 */data/
 .vscode
+*/results/**
+/**/logs/**
+*.csv
+/prototypes/trader/data/*
+/prototypes/double_pendulum/logs/*

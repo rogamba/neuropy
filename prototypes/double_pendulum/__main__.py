@@ -288,7 +288,7 @@ def test_model():
     done = False
     s = cart.reset()
     a = 0
-    for n in range(1,500):
+    for n in range(1,5000):
 
         # Render
         cart.render()
@@ -320,7 +320,7 @@ def test_solution(filename='winner'):
     fit = eval_genome(winner, test=True)
     print("Fitness: "+str(fit))
     node_names = {-1:'X', -2: 'Theta', -3:'Phi', -4:'X dot', -5:'Theta dot', -6:'Phi dot', 0:'Force'}
-    visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/results/winner_solution.gv")
+    #visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/results/winner_solution.gv")
 
 
 if __name__ == '__main__':
