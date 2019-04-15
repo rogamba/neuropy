@@ -5,7 +5,11 @@ import sys
 import config
 from models.evolution import Evolution
 from models.phenotype import Phenotype
-from models import rendering
+try:
+    from models import rendering
+    render=True
+except:
+    render=False
 import models.visualize as visualize
 import json
 
@@ -187,7 +191,8 @@ def run():
         -8: 'Minute', 
         0:  'Posture'
     }
-    visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/results/winner.gv")
+    if render:
+        visualize.draw_net(config.params, winner, True, node_names=node_names, filename=REL_PATH+"/results/winner.gv")
 
 
 def test_solution():

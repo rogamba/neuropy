@@ -57,7 +57,6 @@ def draw_net(config, genome, view=False, filename=None, node_names=None, show_di
 
         dot.node(name, _attributes=node_attrs)
 
-
     if prune_unused:
         edges = set()
         for cg in genome.edges.values():
