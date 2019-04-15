@@ -5,6 +5,7 @@ import sys
 import config
 from models.evolution import Evolution
 from models.phenotype import Phenotype
+from models import rendering
 import models.visualize as visualize
 import json
 
@@ -79,26 +80,33 @@ def eval_genome(genome):
             #print("Output: {}".format(output))
 
             # With the posture, trade
-            #val_start = trader.calculate_value()
-            posture = output[0]
-            trader.trade(posture)
+            #val_start = trader.calculate_value()            
+            action = output[0]
+            trader.trade(action)
             #val_end = trader.calculate_value()
             #print("Values: {} to {}".format(val_start, val_end))
 
             # Status
             status = trader.status()
 
-            if not status:
+            if not status or pd.isnull(action):
+                print("Breaking, low value, balance or bag...")
                 break
 
             # Reset value
             trader.next()
 
-        fitness = trader.get_profit()
-        print(">>>>>>>>>>>>>>> ")
-        print("Fitness:")
-        print(fitness)
+        unit_profit = trader.get_overall_unitary_profit()
+        overall_profit = trader.get_overall_profit()
+        fitness = unit_profit
 
+        print("UProfit: {} // Overall Profit: {}".format(
+            unit_profit,
+            overall_profit
+        ))
+
+        print(">>>>>>>>>>>>>>> ")
+        print("Fitness: {}".format(fitness))
 
     if fitness < 0:
         fitness = 0
@@ -109,12 +117,20 @@ def eval_genome(genome):
 
 def load_history(coin):
     global history, historic_data, evolution
+    print("Loading history...")
     history = pd.read_csv('{}/data/{}.csv'.format(REL_PATH,coin))
     # Filter just one month
     _history = history
-    #_history = history[
-    #    (history['month'] == 11) | 
-    #    (history['month'] == 12)]
+    _history['fulldate'] = _history.apply(
+        lambda x: int("{}{}{}".format(
+            int(x['year']),
+            str(int(x['month'])).zfill(2),
+            str(int(x['day'])).zfill(2)
+        )),
+        axis=1
+    )
+    # Read after the bubble burst
+    _history[_history['fulldate'] > 20180210]
     historic_data = Trader.convert_data(_history)
 
 
@@ -136,7 +152,10 @@ def run():
 
     # Run evolution
     evals_total = config.params['generations'] * config.params['pop_size']
-    winner = evolution.run(fitness_function=eval_genome,generations=config.params['generations'])
+    winner = evolution.run(
+        fitness_function=eval_genome,
+        generations=config.params['generations']
+    )
     
     # Eval genome
     eval_genome(winner)

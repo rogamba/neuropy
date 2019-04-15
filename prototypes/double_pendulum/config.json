@@ -4,7 +4,7 @@
     "generations" :                 800 ,
     "fitness_criterion" :           "max",
     "fitness_threshold" :           60,
-    "pop_size" :                    100, 
+    "pop_size" :                    40, 
     "evals_per_genome" :            1 ,                                  
     "activation_default" :          "tansig",
     "aggregation_default" :         "sum",
