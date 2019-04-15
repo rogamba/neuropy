@@ -1,7 +1,7 @@
 {
     "coin":                         "ethereum",     
     "logging":                      false,                        
-    "generations" :                 200 ,
+    "generations" :                 200,
     "pop_size" :                    50, 
     "fitness_criterion" :           "max",
     "fitness_threshold" :            50000,    
